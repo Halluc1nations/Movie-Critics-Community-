@@ -1,3 +1,4 @@
+
 import {
     Model,
     type InferAttributes,
@@ -52,4 +53,5 @@ import {
     );
     return Review;
   }
+
 
