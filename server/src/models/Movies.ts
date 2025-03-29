@@ -1,31 +1,54 @@
-// src/models/Movie.ts
-import { Table, Column, Model, DataType } from 'sequelize-typescript';
+import {
+    Model,
+    type InferAttributes,
+    type InferCreationAttributes,
+    type CreationOptional,
+    DataTypes,
+    type Sequelize,
+  } from 'sequelize';
 
-@Table({
-  tableName: 'movies'
-})
-export default class Movie extends Model {
-  @Column({
-    type: DataType.STRING,
-    allowNull: false,
-  })
-  title!: string;
+  export class Movies extends Model<
+    InferAttributes<Movies>,
+    InferCreationAttributes<Movies>
+  > {
+    declare id: CreationOptional<number>;
+    declare title: string;
+    declare posterPath: string;
+    declare overview: string;
+    declare imdbId: string;
+  }
 
-  @Column({
-    type: DataType.STRING,
-    allowNull: true,
-  })
-  posterPath?: string;
+    export function MovieFactory(sequelize: Sequelize) {
+        Movies.init(
+        {
+          id: {
+            type: DataTypes.INTEGER,
+            autoIncrement: true,
+            primaryKey: true,
+          },
+            title: {
+            type: DataTypes.STRING,
+            allowNull: false,
+            },
+            posterPath: {
+            type: DataTypes.STRING,
+            allowNull: true,
+            },
+            overview: {
+            type: DataTypes.TEXT,
+            allowNull: true,
+            },
+            imdbId: {
+            type: DataTypes.STRING,
+            allowNull: true,
+            },
+        },
+        {
+            sequelize,
+            modelName: 'Movies',
+        }
+        );
+        return Movies;
+    }
 
-  @Column({
-    type: DataType.TEXT,
-    allowNull: true,
-  })
-  overview?: string;
 
-  @Column({
-    type: DataType.STRING,
-    allowNull: true,
-  })
-  imdbId?: string;
-}

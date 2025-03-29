@@ -1,35 +1,57 @@
-import { Table, Column, Model, DataType, ForeignKey, BelongsTo } from 'sequelize-typescript';
-import Movie from './Movies';
 
-@Table({
-  tableName: 'reviews',
-})
-export default class Review extends Model {
-  @Column({
-    type: DataType.STRING,
-    allowNull: false,
-  })
-  username!: string;
+import {
+    Model,
+    type InferAttributes,
+    type InferCreationAttributes,
+    type CreationOptional,
+    DataTypes,
+    type Sequelize,
+  } from 'sequelize';
 
-  @Column({
-    type: DataType.TEXT,
-    allowNull: false,
-  })
-  comment!: string;
 
-  @Column({
-    type: DataType.INTEGER,
-    allowNull: true,
-  })
-  rating?: number;
+  export class Review extends Model<
+    InferAttributes<Review>,
+    InferCreationAttributes<Review>
+  > {
+    declare id: CreationOptional<number>;
+    declare username: string;
+    declare comment: string;
+    declare rating: number;
+    declare movieId: number;
+  }
 
-  @ForeignKey(() => Movie)
-  @Column({
-    type: DataType.INTEGER,
-    allowNull: false,
-  })
-  movieId!: number;
+  export function ReviewFactory(sequelize: Sequelize) {
+    Review.init(
+      {
+        id: {
+          type: DataTypes.INTEGER,
+          autoIncrement: true,
+          primaryKey: true,
+        },
 
-  @BelongsTo(() => Movie)
-  movie!: Movie;
-}
+        username: {
+          type: DataTypes.STRING,
+          allowNull: false,
+        },
+        comment: {
+          type: DataTypes.TEXT,
+          allowNull: false,
+        },
+        rating: {
+          type: DataTypes.INTEGER,
+          allowNull: true,
+        },
+        movieId: {
+          type: DataTypes.INTEGER,
+          allowNull: false,
+        },
+      },
+      {
+        sequelize,
+        modelName: 'Review',
+      }
+    );
+    return Review;
+  }
+
+
