@@ -1,20 +1,18 @@
 import express from 'express';
 import sequelize from 'sequelize';
-import Movie from './models/Movie';
-import Review from './models/Review';
+import {Movies} from '../../models/Movies';
+import  {Review} from '../../models/Review';
 
-const app = express();
-const port = process.env.PORT || 3001;
+const router = express();
 
-app.use(express.json());
 
 // -----------------------------
 
 // Add a favorite movie 
-app.post('/favorites', async (req, res) => {
+router.post('/favorites', async (req, res) => {
   try {
     const { title, posterPath, overview, imdbId } = req.body;
-    const movie = await Movie.create({ title, posterPath, overview, imdbId });
+    const movie = await Movies.create({ title, posterPath, overview, imdbId });
     res.json(movie);
   } catch (error) {
     console.error('Error adding movie:', error);
@@ -23,9 +21,9 @@ app.post('/favorites', async (req, res) => {
 });
 
 // Fetch all favorite movies
-app.get('/favorites', async (req, res) => {
+router.get('/favorites', async (req, res) => {
   try {
-    const movies = await Movie.findAll();
+    const movies = await Movies.findAll();
     res.json(movies);
   } catch (error) {
     console.error('Error fetching movies:', error);
@@ -38,7 +36,7 @@ app.get('/favorites', async (req, res) => {
 // -----------------------------
 
 // Create a new review
-app.post('/reviews', async (req, res) => {
+router.post('/reviews', async (req, res) => {
   try {
     const { username, comment, rating, movieId } = req.body;
     // Optionally, you can add validation to ensure the movie exists
@@ -51,7 +49,7 @@ app.post('/reviews', async (req, res) => {
 });
 
 // Retrieve all reviews for a specific movie
-app.get('/reviews', async (req, res) => {
+router.get('/reviews', async (req, res) => {
   try {
     // Expect movieId as a query parameter, e.g., /reviews?movieId=123
     const { movieId } = req.query;
@@ -67,7 +65,7 @@ app.get('/reviews', async (req, res) => {
 });
 
 // Update an existing review by ID
-app.put('/reviews/:id', async (req, res) => {
+router.put('/reviews/:id', async (req, res) => {
   try {
     const { id } = req.params;
     const { username, comment, rating } = req.body;
@@ -87,7 +85,7 @@ app.put('/reviews/:id', async (req, res) => {
 });
 
 // Delete a review by ID
-app.delete('/reviews/:id', async (req, res) => {
+router.delete('/reviews/:id', async (req, res) => {
   try {
     const { id } = req.params;
     const review = await Review.findByPk(id);
@@ -102,9 +100,4 @@ app.delete('/reviews/:id', async (req, res) => {
   }
 });
 
-// -----------------------------
-// Sync the database and start the server
-// -----------------------------
-sequelize.sync().then(() => {
-  app.listen(port, () => console.log(`Server running on port ${port}`));
-});
+export{router as review};
