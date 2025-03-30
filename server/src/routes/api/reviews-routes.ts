@@ -2,13 +2,9 @@ import express from 'express';
 import sequelize from 'sequelize';
 import {Movies} from '../../models/Movies';
 import  {Review} from '../../models/Review';
-
 const router = express();
-
-
 // -----------------------------
-
-// Add a favorite movie 
+// Add a favorite movie
 router.post('/favorites', async (req, res) => {
   try {
     const { title, posterPath, overview, imdbId } = req.body;
@@ -19,7 +15,6 @@ router.post('/favorites', async (req, res) => {
     res.status(500).json({ error: 'Error adding movie' });
   }
 });
-
 // Fetch all favorite movies
 router.get('/favorites', async (req, res) => {
   try {
@@ -30,11 +25,9 @@ router.get('/favorites', async (req, res) => {
     res.status(500).json({ error: 'Error fetching movies' });
   }
 });
-
 // -----------------------------
 // New endpoints for Reviews (Comments/Community Reviews)
 // -----------------------------
-
 // Create a new review
 router.post('/reviews', async (req, res) => {
   try {
@@ -47,7 +40,6 @@ router.post('/reviews', async (req, res) => {
     res.status(500).json({ error: 'Error creating review' });
   }
 });
-
 // Retrieve all reviews for a specific movie
 router.get('/reviews', async (req, res) => {
   try {
@@ -63,7 +55,6 @@ router.get('/reviews', async (req, res) => {
     res.status(500).json({ error: 'Error fetching reviews' });
   }
 });
-
 // Update an existing review by ID
 router.put('/reviews/:id', async (req, res) => {
   try {
@@ -83,7 +74,6 @@ router.put('/reviews/:id', async (req, res) => {
     res.status(500).json({ error: 'Error updating review' });
   }
 });
-
 // Delete a review by ID
 router.delete('/reviews/:id', async (req, res) => {
   try {
@@ -99,5 +89,10 @@ router.delete('/reviews/:id', async (req, res) => {
     res.status(500).json({ error: 'Error deleting review' });
   }
 });
+export{router as reviewRouter};
 
-export{router as review};
+
+
+
+
+
