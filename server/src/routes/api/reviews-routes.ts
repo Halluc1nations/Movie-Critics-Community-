@@ -89,6 +89,7 @@ router.delete('/reviews/:id', async (req, res) => {
     res.status(500).json({ error: 'Error deleting review' });
   }
 });
+
 // Increment thumbs-up for a review
 router.post('/reviews/:id/thumbs-up', async (req, res) => {
   try {
@@ -121,8 +122,5 @@ router.post('/reviews/:id/thumbs-down', async (req, res) => {
     res.status(500).json({ error: 'Error incrementing thumbs-down' });
   }
 });
-export{router as review};
 
-
-
-
+export{router as reviewRouter};
