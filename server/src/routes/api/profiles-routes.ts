@@ -1,6 +1,6 @@
 import express from 'express';
 import type { Request, Response } from 'express';
-import { Profile } from '../models/index.js';
+import { Profile } from '../../models/index.js';
 
 const router = express.Router();
 
@@ -55,11 +55,11 @@ router.put('/:id', async (req: Request, res: Response) => {
   try {
     const profile = await Profile.findByPk(id);
     if (profile) {
-      Profile.name = name;
-      Profile.email = email;
-      Profile.password = password;
-      Profile.role = role;
-      await Profile.save();
+      profile.name = name;
+      profile.email = email;
+      profile.password = password;
+      profile.role = role;
+      await profile.save();
       res.json(profile);
     } else {
       res.status(404).json({ message: 'Profile not found' });
