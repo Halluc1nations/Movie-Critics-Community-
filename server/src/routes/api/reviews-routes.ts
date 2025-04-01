@@ -22,7 +22,7 @@ router.get('/favorites', async (req, res) => {
     res.json(movies);
   } catch (error) {
     console.error('Error fetching movies:', error);
-    res.status(500).json({ error: 'Error fetching movies' });git pul
+    res.status(500).json({ error: 'Error fetching movies' });
   }
 });
 // -----------------------------
