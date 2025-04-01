@@ -1,7 +1,6 @@
 import express from 'express';
-import sequelize from 'sequelize';
-import {Movies} from '../../models/Movies';
-import  {Review} from '../../models/Review';
+import {Movies} from '../../models/Movies.js';
+import  {Review} from '../../models/Review.js';
 const router = express();
 // -----------------------------
 // Add a favorite movie
@@ -22,7 +21,7 @@ router.get('/favorites', async (req, res) => {
     res.json(movies);
   } catch (error) {
     console.error('Error fetching movies:', error);
-    res.status(500).json({ error: 'Error fetching movies' });git pul
+    res.status(500).json({ error: 'Error fetching movies' });
   }
 });
 // -----------------------------
