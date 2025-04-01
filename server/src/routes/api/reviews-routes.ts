@@ -1,7 +1,6 @@
 import express from 'express';
-import sequelize from 'sequelize';
-import {Movies} from '../../models/Movies';
-import  {Review} from '../../models/Review';
+import {Movies} from '../../models/Movies.js';
+import  {Review} from '../../models/Review.js';
 const router = express();
 // -----------------------------
 // Add a favorite movie
