@@ -3,13 +3,6 @@ import { ProfileFactory } from './Profile.js';
 import { ReviewFactory } from './Review.js';
 import { MovieFactory } from './Movies.js';
 
-const Profile = ProfileFactory(sequelize);
-
-export { sequelize, Profile };
-=======
-import { ReviewFactory } from './Review.js';
-import { MovieFactory } from './Movies.js';
-
 
 const Profile = ProfileFactory(sequelize);
 const Review = ReviewFactory(sequelize);
