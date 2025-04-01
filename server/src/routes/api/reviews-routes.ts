@@ -22,7 +22,7 @@ router.get('/favorites', async (req, res) => {
     res.json(movies);
   } catch (error) {
     console.error('Error fetching movies:', error);
-    res.status(500).json({ error: 'Error fetching movies' });git pul
+    res.status(500).json({ error: 'Error fetching movies' });
   }
 });
 // -----------------------------
@@ -89,39 +89,9 @@ router.delete('/reviews/:id', async (req, res) => {
     res.status(500).json({ error: 'Error deleting review' });
   }
 });
-// Increment thumbs-up for a review
-router.post('/reviews/:id/thumbs-up', async (req, res) => {
-  try {
-    const { id } = req.params;
-    const review = await Review.findByPk(id);
-    if (!review) {
-      return res.status(404).json({ error: 'Review not found' });
-    }
-    review.thumbsUp = (review.thumbsUp || 0) + 1;
-    await review.save();
-    res.json(review);
-  } catch (error) {
-    console.error('Error incrementing thumbs-up:', error);
-    res.status(500).json({ error: 'Error incrementing thumbs-up' });
-  }
-});
-// Increment thumbs-down for a review
-router.post('/reviews/:id/thumbs-down', async (req, res) => {
-  try {
-    const { id } = req.params;
-    const review = await Review.findByPk(id);
-    if (!review) {
-      return res.status(404).json({ error: 'Review not found' });
-    }
-    review.thumbsDown = (review.thumbsDown || 0) + 1;
-    await review.save();
-    res.json(review);
-  } catch (error) {
-    console.error('Error incrementing thumbs-down:', error);
-    res.status(500).json({ error: 'Error incrementing thumbs-down' });
-  }
-});
 export{router as review};
+
+
 
 
 
