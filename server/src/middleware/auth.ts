@@ -29,3 +29,21 @@ export const authenticateToken = (
     res.sendStatus(401); // Unauthorized
   }
 };
+const blacklist = new Set<string>();
+
+/**
+ * Adds a token to the blacklist.
+ * @param token - The JWT token to blacklist.
+ */
+export const addToBlacklist = (token: string) => {
+  blacklist.add(token);
+};
+
+/**
+ * Checks if a token is blacklisted.
+ * @param token - The JWT token to check.
+ * @returns True if the token is blacklisted, false otherwise.
+ */
+export const isBlacklisted = (token: string): boolean => {
+  return blacklist.has(token);
+};

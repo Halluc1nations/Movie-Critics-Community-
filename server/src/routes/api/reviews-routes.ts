@@ -21,7 +21,11 @@ router.post('/favorites', async (req, res) => {
 // Fetch all favorite movies
 router.get('/favorites', async (_req, res) => {
   try {
-    const movies = await Movies.findAll();
+    const movies = await Movies.findAll({
+      where: {
+        isFavorite: true,
+      },
+    });
     res.json(movies);
   } catch (error) {
     console.error('Error fetching movies:', error);
