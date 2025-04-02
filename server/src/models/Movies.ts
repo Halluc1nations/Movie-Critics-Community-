@@ -16,6 +16,7 @@ import {
     declare posterPath: string;
     declare overview: string;
     declare imdbId: string;
+    declare isFavorite: CreationOptional<boolean>;
   }
 
     export function MovieFactory(sequelize: Sequelize) {
@@ -42,6 +43,10 @@ import {
             type: DataTypes.STRING,
             allowNull: true,
             },
+            isFavorite: {
+              type: DataTypes.BOOLEAN,
+              defaultValue: false,
+          },
         },
         {
             sequelize,

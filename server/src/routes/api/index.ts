@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { reviewRouter } from './Reviews-routes.js';
+import { reviewRouter } from './reviews-routes.js';
 import { profileRouter } from './profiles-routes.js';
 
 const router = Router();
