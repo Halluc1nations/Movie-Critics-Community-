@@ -18,6 +18,8 @@ import {
     declare comment: string;
     declare rating: number;
     declare movieId: number;
+    declare thumbsUp: CreationOptional<number>;
+    declare thumbsDown: CreationOptional<number>;
   }
 
   export function ReviewFactory(sequelize: Sequelize) {
@@ -44,6 +46,14 @@ import {
         movieId: {
           type: DataTypes.INTEGER,
           allowNull: false,
+        },
+        thumbsUp: {
+          type: DataTypes.INTEGER,
+          defaultValue: 0,
+        },
+        thumbsDown: {
+          type: DataTypes.INTEGER,
+          defaultValue: 0,
         },
       },
       {
