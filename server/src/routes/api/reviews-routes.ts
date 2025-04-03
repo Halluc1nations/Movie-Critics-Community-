@@ -19,19 +19,19 @@ router.post('/favorites', async (req, res) => {
   }
 });
 // Fetch all favorite movies
-router.get('/favorites', async (_req, res) => {
-  try {
-    const movies = await Movies.findAll({
-      where: {
-        isFavorite: true,
-      },
-    });
-    res.json(movies);
-  } catch (error) {
-    console.error('Error fetching movies:', error);
-    res.status(500).json({ error: 'Error fetching movies' });
-  }
-});
+// router.get('/favorites', async (_req, res) => {
+//   try {
+//     const movies = await Movies.findAll({
+//       where: {
+//         isFavorite: true,
+//       },
+//     });
+//     res.json(movies);
+//   } catch (error) {
+//     console.error('Error fetching movies:', error);
+//     res.status(500).json({ error: 'Error fetching movies' });
+//   }
+// });
 // -----------------------------
 // New endpoints for Reviews (Comments/Community Reviews)
 // -----------------------------
@@ -47,6 +47,31 @@ router.post('/reviews', async (req, res) => {
     res.status(500).json({ error: 'Error creating review' });
   }
 });
+
+router.post('/:movieId', async (req, res) => {
+ const  movieId  = parseInt( req.params.movieId);
+  const { comment } = req.body;
+  // @ts-ignore
+const username = req?.user?.username || "JollyGuru"; // Replace with actual username logic
+ 
+
+
+  if (!comment) {
+      return res.status(400).json({ message: "Review content is required" });
+  }
+
+  try {
+      const movie = await Movies.findByPk(movieId); // Assuming you use Sequelize
+      if (!movie) return res.status(404).json({ message: "Movie not found" });
+
+      const review = await Review.create({ movieId, comment, username });
+      return res.status(201).json(review);
+  } catch (error) {
+      console.error("Error saving review:", error);
+      return res.status(500).json({ message: "Internal server error" });
+  }
+});
+
 // Retrieve all reviews for a specific movie
 router.get('/reviews', async (req: Request, res: Response) => {
   try {

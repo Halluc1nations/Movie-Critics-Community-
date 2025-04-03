@@ -18,7 +18,7 @@ Review.belongsTo(Movies, {
 });
 
 Movies.belongsTo(Profile, {
-    foreignKey: 'profileId',
+  foreignKey: 'profileId',
 });
 
 export { sequelize, Profile, Movies, Review };

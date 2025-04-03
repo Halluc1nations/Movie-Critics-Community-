@@ -16,7 +16,7 @@ import {
     declare id: CreationOptional<number>;
     declare username: string;
     declare comment: string;
-    declare rating: number;
+    declare rating: CreationOptional<number>;
     declare movieId: number;
     declare thumbsUp: CreationOptional<number>;
     declare thumbsDown: CreationOptional<number>;

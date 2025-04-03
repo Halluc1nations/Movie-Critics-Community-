@@ -1,4 +1,9 @@
-import React,{useState} from 'react'
+import React, { useEffect, useState } from "react";
+import ReviewItem from "./ReviewItem";
+import ReviewForm from "./ReviewForm";
+import axios from "axios";
+import { IReview } from "../interfaces/review";
+
 interface Movie {
   id: number;
   title: string;
@@ -8,45 +13,78 @@ interface Movie {
 }
 interface MovieCardProps {
   movie: Movie;
-  addComment: (movieId: number, comment: string, setComments: React.Dispatch<React.SetStateAction<string[]>>) => void;
 }
 const TMDB_IMAGE_URL = "https://image.tmdb.org/t/p/w500";
-const MovieCard: React.FC<MovieCardProps> = ({ movie, addComment }) => {
+const MovieCard: React.FC<MovieCardProps> = ({ movie }) => {
   const [comment, setComment] = useState("");
-  const [comments, setComments] = useState<string[]>([]);
+  const [reviews, setReviews] = useState<IReview[]>([]);
 
+  useEffect(() => {
+    const fetchReviews = async () => {
+      try {
+        const response = await axios.get<IReview[]>(
+          `http://localhost:3001/api/reviews/`,
+          {
+            params: {
+              movieId: movie.id,
+            },
+          },
+        );
+        if (response) {
+          const { data } = response;
+          console.log(data);
+          setReviews(data);
+        }
+      } catch (error) {
+        console.error("Error getting reviews for movie:", error);
+      }
+    };
+    fetchReviews();
+  }, [movie.id]);
+
+  const handleAddComment = async () => {
+    try {
+      const response = await axios.post<IReview>(
+        `http://localhost:3001/api/reviews/`,
+        {
+          movieId: movie.id,
+          comment: comment,
+        },
+      );
+      if (response) {
+        const { data } = response;
+        console.log(data);
+        setReviews((prevReviews) => [...prevReviews, data]);
+      }
+    } catch (error) {
+      console.error("Error adding review:", error);
+    }
+  };
 
   return (
-    <div>
+    <article>
       <div className="movie-card">
-            <img src={`${TMDB_IMAGE_URL}${movie.poster_path}`} alt={movie.title} />
-            <h3>{movie.title}</h3>
-            <p>Release Date: {movie.release_date}</p>
-            <div className="reviews">
-                <strong>Reviews:</strong>
-                {movie.reviews.length > 0 ? (
-                    movie.reviews.map((review, index) => <p key={index}>📝 {review}</p>)
-                ) : (
-                    <p>No reviews available.</p>
-                )}
-            </div>
-            <div className="comment-box">
-                <input 
-                    type="text" 
-                    placeholder="Add a comment..." 
-                    value={comment} 
-                    onChange={(e) => setComment(e.target.value)}
-                />
-                <button onClick={() => { addComment(movie.id, comment, setComments); setComment(""); }}>
-                    Post
-                </button>
-                <div className="comments">
-                    {comments.map((cmt, index) => <p key={index}>💬 {cmt}</p>)}
-                </div>
-            </div>
+        <img src={`${TMDB_IMAGE_URL}${movie.poster_path}`} alt={movie.title} />
+        <h3>{movie.title}</h3>
+        <p>Release Date: {movie.release_date}</p>
+        <div className="reviews">
+          <strong>Reviews:</strong>
+          {movie.reviews.length > 0 ? (
+            movie.reviews.map((review, index) => <p key={index}>📝 {review}</p>)
+          ) : (
+            <p>No reviews available.</p>
+          )}
         </div>
-    </div>
-  )
-}
+          <section className="comments-list">
+            {reviews.map((review, index) => (
+              <ReviewItem key={index} review={review} />
+            ))}
+          </section>
+          <ReviewForm movieId = {movie.id}/>
+        </div> {/* close movie card */}
+    
+    </article>
+  );
+};
 
-export default MovieCard
+export default MovieCard;
