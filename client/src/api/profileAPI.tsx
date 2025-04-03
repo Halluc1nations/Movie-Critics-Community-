@@ -23,27 +23,27 @@ const retrieveProfiles = async () => {
 
 const retrieveProfile = async (id: number | null): Promise<profileData> => {
   try {
-    const response = await fetch(`/api/volunteers/${id}`, {
+    const response = await fetch(`/api/profiles/${id}`, {
       headers: {
         'Content-Type': 'application/json',
       }
     });
     const data = await response.json();
     if(!response.ok) {
-      throw new Error('invalid volunteer API response, check network tab!');
+      throw new Error('invalid profiles API response, check network tab!');
     }
 
     return data;
   } catch (err) {
     console.log('Error from data retrieval:', err);
-    return Promise.reject('Could not fetch volunteer');
+    return Promise.reject('Could not fetch profile');
   }
 };
 
-const createVolunteer = async (body: VolunteerData): Promise<VolunteerData> => {
+const createProfile = async (body: ProfileData): Promise<ProfileData> => {
   try {
     const response = await fetch(
-      '/api/volunteers/', {
+      '/api/profiles/', {
         method: 'POST',
           headers: {
             'Content-Type': 'application/json',
@@ -61,15 +61,15 @@ const createVolunteer = async (body: VolunteerData): Promise<VolunteerData> => {
     return data;
 
   } catch (err) {
-    console.log('Error from Volunteer Creation: ', err);
-    return Promise.reject('Could not create Volunteer');
+    console.log('Error from Profile Creation: ', err);
+    return Promise.reject('Could not create Profile');
   }
 };
 
-const updateVolunteers = async (id: number, body: VolunteerData): Promise<VolunteerData> => {
+const updateProfile = async (id: number, body: ProfileData): Promise<ProfileData> => {
   try {
     const response = await fetch(
-      `/api/volunteers/${id}`, {
+      `/api/profiles/${id}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
@@ -90,10 +90,10 @@ const updateVolunteers = async (id: number, body: VolunteerData): Promise<Volunt
   }
 };
 
-const deleteVolunteer = async (id: number): Promise<ApiMessage> => {
+const deleteProfile = async (id: number): Promise<ApiMessage> => {
   try {
     const response = await fetch(
-      `/api/volunteers/${id}`, {
+      `/api/profiles/${id}`, {
         method: 'DELETE',
         headers: {
           'Content-Type': 'application/json',
@@ -108,9 +108,9 @@ const deleteVolunteer = async (id: number): Promise<ApiMessage> => {
 
     return data;
   } catch (err) {
-    console.error('Error in deleting volunteer', err);
-    return Promise.reject('Could not delete volunteer');
+    console.error('Error in deleting profile', err);
+    return Promise.reject('Could not delete profile');
   }
 };
 
-export { retrieveVolunteer, retrieveVolunteers, createVolunteer, updateVolunteers, deleteVolunteer };
+export { retrieveProfiles, retrieveProfile, createProfile, updateProfile, deleteProfile };

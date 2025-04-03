@@ -1,116 +1,92 @@
-import { WorkData } from "../interfaces/WorkData";
-import { ApiMessage } from "../interfaces/ApiMessage";
-
-const retrieveWorks = async () => {
+import express from 'express';
+import sequelize from 'sequelize';
+import {Movies} from '../../models/Movies';
+import  {Review} from '../../models/Review';
+const router = express();
+// -----------------------------
+// Add a favorite movie
+router.post('/favorites', async (req, res) => {
   try {
-    const response = await fetch('/api/works', {
-      headers: {
-        'Content-Type': 'application/json'
-      }
-    });
-    const data = await response.json();
-    
-    if(!response.ok) {
-      throw new Error('invalid work API response, check network tab!');
-    }
-
-    return data;
-  } catch(err) {
-    console.log('Error from data retrieval:', err);
-    return [];
+    const { title, posterPath, overview, imdbId } = req.body;
+    const movie = await Movies.create({ title, posterPath, overview, imdbId });
+    res.json(movie);
+  } catch (error) {
+    console.error('Error adding movie:', error);
+    res.status(500).json({ error: 'Error adding movie' });
   }
-};
-
-const retrieveWork = async (id: number | null) => {
+});
+// Fetch all favorite movies
+router.get('/favorites', async (req, res) => {
   try {
-    const response = await fetch(`/api/works/${id}`, {
-      headers: {
-        'Content-Type': 'application/json',
-      }
-    });
-    const data = await response.json();
-    if(!response.ok) {
-      throw new Error('invalid volunteer API response, check network tab!');
-    }
-
-    return data;
-  } catch (err) {
-    console.log('Error from data retrieval:', err);
-    return Promise.reject('Could not fetch work');
+    const movies = await Movies.findAll();
+    res.json(movies);
+  } catch (error) {
+    console.error('Error fetching movies:', error);
+    res.status(500).json({ error: 'Error fetching movies' });
   }
-};
-
-const createWork = async (body: WorkData):Promise<WorkData> => {
+});
+// -----------------------------
+// New endpoints for Reviews (Comments/Community Reviews)
+// -----------------------------
+// Create a new review
+router.post('/reviews', async (req, res) => {
   try {
-    const response = await fetch(
-      '/api/works/', {
-        method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-        body: JSON.stringify(body)
-      }
-
-    )
-    const data = response.json();
-
-    if(!response.ok) {
-      throw new Error('invalid API response, check network tab!');
-    }
-
-    return data;
-
-  } catch (err) {
-    console.log('Error from Work Creation: ', err);
-    return Promise.reject('Could not create new work');
+    const { username, comment, rating, movieId } = req.body;
+    // Optionally, you can add validation to ensure the movie exists
+    const review = await Review.create({ username, comment, rating, movieId });
+    res.json(review);
+  } catch (error) {
+    console.error('Error creating review:', error);
+    res.status(500).json({ error: 'Error creating review' });
   }
-};
-
-const updateWork = async (id: number, body: WorkData ):Promise<WorkData> => {
+});
+// Retrieve all reviews for a specific movie
+router.get('/reviews', async (req, res) => {
   try {
-    const response = await fetch(
-      `/api/works/${id}`, {
-        method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(body)
-      }
-    )
-    const data = await response.json();
-
-    if(!response.ok) {
-      throw new Error('invalid API response, check network tab!');
+    // Expect movieId as a query parameter, e.g., /reviews?movieId=123
+    const { movieId } = req.query;
+    if (!movieId) {
+      return res.status(400).json({ error: 'movieId query parameter is required' });
     }
-
-    return data;
-  } catch (err) {
-    console.error('Update did not work', err);
-    return Promise.reject('Update did not work');
+    const reviews = await Review.findAll({ where: { movieId } });
+    res.json(reviews);
+  } catch (error) {
+    console.error('Error fetching reviews:', error);
+    res.status(500).json({ error: 'Error fetching reviews' });
   }
-};
-
-const deleteWork = async (workId: number | null): Promise<ApiMessage> => {
+});
+// Update an existing review by ID
+router.put('/reviews/:id', async (req, res) => {
   try {
-    const response = await fetch(
-      `/api/works/${workId}`, {
-        method: 'DELETE',
-        headers: {
-          'Content-Type': 'application/json'
-        }
-      }
-    )
-    const data = await response.json();
-
-    if(!response.ok) {
-      throw new Error('invalid API response, check network tab!');
+    const { id } = req.params;
+    const { username, comment, rating } = req.body;
+    const review = await Review.findByPk(id);
+    if (!review) {
+      return res.status(404).json({ error: 'Review not found' });
     }
-
-    return data;
-  } catch (err) {
-    console.error('Error in deleting work', err);
-    return Promise.reject('Could not delete work');
+    review.username = username ?? review.username;
+    review.comment = comment ?? review.comment;
+    review.rating = rating !== undefined ? rating : review.rating;
+    await review.save();
+    res.json(review);
+  } catch (error) {
+    console.error('Error updating review:', error);
+    res.status(500).json({ error: 'Error updating review' });
   }
-};
-
-export { retrieveWork, retrieveWorks, createWork, updateWork, deleteWork };
+});
+// Delete a review by ID
+router.delete('/reviews/:id', async (req, res) => {
+  try {
+    const { id } = req.params;
+    const review = await Review.findByPk(id);
+    if (!review) {
+      return res.status(404).json({ error: 'Review not found' });
+    }
+    await review.destroy();
+    res.json({ message: 'Review deleted successfully' });
+  } catch (error) {
+    console.error('Error deleting review:', error);
+    res.status(500).json({ error: 'Error deleting review' });
+  }
+});
+export{router as review};
