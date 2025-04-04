@@ -11,3 +11,12 @@ declare module 'express-serve-static-core' {
     session?: Session & Partial<SessionData>;
   }
 }
+
+declare namespace Express {
+  export interface Request {
+    user?: {
+      id: number;
+      username: string;
+    };
+  }
+}

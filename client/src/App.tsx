@@ -1,19 +1,24 @@
-import { Outlet } from 'react-router-dom';
-import MovieApp from './components/Html';
+
+import React from 'react';
+import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import Navbar from './components/Navbar';
+import MovieApp from './components/MovieApp';
+import Login from './pages/Login';
 
-function App() {
 
+const App: React.FC = () => {
   return (
-    <div>
-      <Navbar />
-      <MovieApp />
-      
-      <main className='container pt-5'>
-        <Outlet />
-      </main>
-    </div>
-  )
-}
+    <Router>
+      <div>
+        <Navbar />
+        <Routes>
+          <Route path="/" element={<MovieApp />} />
+          <Route path="/favorites" element={<div>Favorites Page</div>} />
+          <Route path="/login" element={<Login />} />
+        </Routes>
+      </div>
+    </Router>
+  );
+};
 
-export default App
+export default App;
